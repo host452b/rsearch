@@ -109,25 +109,32 @@ if (window.rsearchInjected) {
     return scrollbarContainer;
   }
 
-  // Track element for hotspot calculation and scrollbar marker rendering
+  // Track element for hotspot calculation and scrollbar marker rendering.
+  // only stores the reference here; actual offsetTop is calculated later
+  // by finalizeMatchPositions() after all DOM replacements are done.
   function trackForHotspot(element, color) {
     if (!element) return;
     
-    // get absolute position in document
-    const rect = element.getBoundingClientRect();
-    const offsetTop = rect.top + window.scrollY;
-    
-    // get preview text
     const text = element.textContent || '';
     const preview = text.substring(0, 50).trim();
     
-    // store element, position, and highlight color
     matchPositions.push({
       element: element,
-      offsetTop: offsetTop,
+      offsetTop: 0,
       text: preview,
       color: color || '#c026d3'
     });
+  }
+
+  // calculate offsetTop for all tracked elements after they are in the DOM
+  function finalizeMatchPositions() {
+    for (let i = 0; i < matchPositions.length; i++) {
+      const pos = matchPositions[i];
+      if (pos.element && document.body.contains(pos.element)) {
+        const rect = pos.element.getBoundingClientRect();
+        pos.offsetTop = rect.top + window.scrollY;
+      }
+    }
   }
 
   // Calculate density score for a window of matches
@@ -351,17 +358,23 @@ if (window.rsearchInjected) {
 
   // render scrollbar markers from collected matchPositions
   function renderScrollbarMarkers() {
-    if (!scrollbarContainer) return;
+    if (!scrollbarContainer) {
+      return;
+    }
 
     scrollbarContainer.innerHTML = '';
 
-    if (matchPositions.length === 0) return;
+    if (matchPositions.length === 0) {
+      return;
+    }
 
     const docHeight = document.documentElement.scrollHeight;
     const viewportHeight = window.innerHeight;
 
     // skip when the page fits entirely in the viewport
-    if (docHeight <= viewportHeight) return;
+    if (docHeight <= viewportHeight) {
+      return;
+    }
 
     const tooltip = getMarkerTooltip();
 
@@ -614,6 +627,7 @@ if (window.rsearchInjected) {
         }
       }
       
+      finalizeMatchPositions();
       const hotspots = getTopHotspots();
       renderScrollbarMarkers();
 
@@ -733,6 +747,7 @@ if (window.rsearchInjected) {
       }
     }
     
+    finalizeMatchPositions();
     const hotspots = getTopHotspots();
     renderScrollbarMarkers();
 
@@ -1030,6 +1045,7 @@ if (window.rsearchInjected) {
         }
       }
       
+      finalizeMatchPositions();
       const hotspots = getTopHotspots();
       renderScrollbarMarkers();
 
