@@ -5,6 +5,24 @@ All notable changes to RSearch will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2026-03-03
+
+### Added
+- **Scrollbar Marker & Navigation**
+  - Color-coded markers on a fixed right-side overlay matching highlight colors
+  - Click any marker to smooth-scroll to the corresponding search result
+  - Flash animation (1.5s) emphasizes the target match after navigation
+  - Hover tooltip shows first 20 characters of matched text
+  - Automatic marker consolidation when matches exceed 500 for performance
+  - Dynamic position refresh via MutationObserver and window resize listener
+  - Full cleanup on search clear (markers, tooltip, observer)
+
+- **Styles**
+  - Tooltip CSS for scrollbar marker hover preview
+  - `@keyframes rsearch-flash` animation for click-to-navigate emphasis
+
+---
+
 ## [2.0.0] - 2026-02-05
 
 ### Major Release - Error Log Analysis
