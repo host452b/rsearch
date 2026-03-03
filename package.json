@@ -1,6 +1,6 @@
 {
   "name": "rsearch-extension",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Advanced search with regex, 363+ error keywords, auto-highlight for Chrome",
   "private": true,
   "type": "module",
